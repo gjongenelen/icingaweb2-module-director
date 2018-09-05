@@ -41,6 +41,11 @@ class IcingaZone extends IcingaObject
         return c::renderKeyValue('endpoints', c::renderArray($endpoints));
     }
 
+    public function isGlobal()
+    {
+        return $this->get('is_global') === 'y';
+    }
+
     public function getRenderingZone(IcingaConfig $config = null)
     {
         // If the zone has a parent zone...

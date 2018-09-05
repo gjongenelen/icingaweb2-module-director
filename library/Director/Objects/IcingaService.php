@@ -471,14 +471,21 @@ class IcingaService extends IcingaObject implements ExportInterface
 
     /**
      * @return string
+     * @throws \Icinga\Exception\NotFoundError
      */
     protected function renderSuffix()
     {
+        $suffix = '';
         if ($this->isApplyRule() || $this->usesVarOverrides()) {
-            return $this->renderImportHostVarOverrides() . parent::renderSuffix();
-        } else {
-            return parent::renderSuffix();
+            $zone = IcingaZone::load($this->getRenderingZone(), $this->connection);
+            if (! $zone->isGlobal()) {
+                $suffix .= c::renderKeyValue('zone', c::renderString($zone->getObjectName()));
+            }
+
+            $suffix .= $this->renderImportHostVarOverrides();
         }
+
+        return $suffix . parent::renderSuffix();
     }
 
     /**
